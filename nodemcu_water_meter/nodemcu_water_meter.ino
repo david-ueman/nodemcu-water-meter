@@ -17,44 +17,57 @@ void setup()
    delay(10);
 
    //Connect to WIFI
+   Serial.println("Connecting...");
    WiFi.begin(ssid, password);
-   while (WiFi.status() != WL_CONNECTED) 
-      delay(500);
+   while (WiFi.status() != WL_CONNECTED)
+     delay(500);
+     Serial.print(".");
+    
+  Serial.println("");
+  Serial.print("Connected to WiFi network with IP Address: ");
+  Serial.println(WiFi.localIP());
 }
 
 void loop()
 {
    HTTPClient http;
    WiFiClient client;
+   String url;
 
    distance = sonar.ping_cm();
    volume = -30 * distance + 5341; //These values correspond 
 
-   url = url + "?water_volume=" + String(volume);
+   url = storage_routines_url +  "?water_volume=" + String(volume);
    url = url + "&tank_id=1";
 
-   if (http.begin(client, url)) //Beginns connection
-   {
-      Serial.print("[HTTP] GET...\n");
-      int httpCode = http.GET();  // Sends the request
+    if(WiFi.status()== WL_CONNECTED){
+      HTTPClient http;
 
-      if (httpCode > 0) {
-         Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-
-         if (httpCode == HTTP_CODE_OK || httpCode == HTTP_CODE_MOVED_PERMANENTLY) {
-            String payload = http.getString();   // Obtaining the response
-            Serial.println(payload);   // Printing the response to the serial monitor
-         }
+      String serverPath = url;
+      
+      // Your Domain name with URL path or IP address with path
+      http.begin(client, serverPath.c_str());
+      
+      // Send HTTP GET request
+      int httpResponseCode = http.GET();
+      
+      if (httpResponseCode>0) {
+        Serial.print("HTTP Response code: ");
+        Serial.println(httpResponseCode);
+        String payload = http.getString();
+        Serial.println(payload);
       }
       else {
-         Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+        Serial.print("Error code: ");
+        Serial.println(httpResponseCode);
       }
-
+      // Free resources
       http.end();
-   }
-   else {
-      Serial.printf("[HTTP} Unable to connect\n");
-   }
+    }
+    else {
+      Serial.println("WiFi is not connected");
+    }
 
-   delay(30000);
+   //wait 5 minutes until next reading...
+   delay(300000);
 }
