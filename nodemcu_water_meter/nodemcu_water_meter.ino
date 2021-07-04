@@ -20,8 +20,10 @@ void setup()
    Serial.println("Connecting...");
    WiFi.begin(ssid, password);
    while (WiFi.status() != WL_CONNECTED)
+     {
      delay(500);
      Serial.print(".");
+     }
     
   Serial.println("");
   Serial.print("Connected to WiFi network with IP Address: ");
@@ -39,6 +41,22 @@ void loop()
 
    url = storage_routines_url +  "?water_volume=" + String(volume);
    url = url + "&tank_id=1";
+
+   /*****/
+   if (WiFi.status() != WL_CONNECTED)   // If connection is lost, re-connect!
+     {
+     Serial.println("Connection lost... Re-connecting...");
+     WiFi.begin(ssid, password);
+     while (WiFi.status() != WL_CONNECTED)
+       {
+       delay(500);
+       Serial.print(".");
+       }
+    Serial.println("");
+    Serial.print("Re-connected to WiFi network with IP Address: ");
+    Serial.println(WiFi.localIP());
+    }
+    /*****/
 
     if(WiFi.status()== WL_CONNECTED){
       HTTPClient http;

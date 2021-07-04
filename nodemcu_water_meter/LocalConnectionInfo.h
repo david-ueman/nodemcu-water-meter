@@ -2,4 +2,4 @@
 const char* ssid = "";
 const char* password = "";
 
-String url = "http://your_server.net/store_data_reading.php";
+String storage_routines_url = "http://your_server.net/store_data_reading.php";
