@@ -62,9 +62,10 @@ void loop()
       HTTPClient http;
 
       String serverPath = url;
+      Serial.println(serverPath);
       
       // Your Domain name with URL path or IP address with path
-      http.begin(client, serverPath.c_str());
+      http.begin(client, serverPath);
       
       // Send HTTP GET request
       int httpResponseCode = http.GET();
