@@ -37,7 +37,7 @@ void loop()
    String url;
 
    distance = sonar.ping_cm();
-   volume = -30 * distance + 5341; //These values correspond 
+   volume = -30 * distance + 5141; //These values correspond 
 
    url = storage_routines_url +  "?water_volume=" + String(volume);
    url = url + "&tank_id=1";
